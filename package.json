@@ -1,0 +1,28 @@
+{
+  "name": "codemirror-ambiance-plugin",
+  "id": "codemirror-ambiance-plugin",
+  "version": "0.0.1",
+  "description": "Codemirror plugin for ambiance editor",
+  "keywords": [ "codemirror", "ambiance", "editor", "plugin" ],
+  "author": "Irakli Gozalishvili <rfobic@gmail.com> (http://jeditoolkit.com)",
+  "homepage": "https://github.com/Gozala/gcli-ambiance-plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gozala/codemirror-ambiance-plugin.git",
+    "web": "https://github.com/Gozala/codemirror-ambiance-plugin"
+  },
+  "bugs": {
+    "url": "http://github.com/Gozala/codemirror-ambiance-plugin/issues/"
+  },
+  "main": "./codemirror.js",
+  "dependencies": {
+    "micro-promise": "*"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "licenses": [{
+    "type" : "MIT",
+    "url" : "http://jeditoolkit.com/LICENSE"
+  }]
+}
