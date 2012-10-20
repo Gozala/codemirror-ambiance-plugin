@@ -7,9 +7,12 @@
 require("./resource/codemirror-compressed")
 
 var CodeMirror = window.CodeMirror
+var path = require("path")
 var hub = require("plugin-hub/core"), meta = hub.meta, values = meta.values
 var promises = require("micro-promise/core"),
     defer = promises.defer
+
+var resources = path.join(path.dirname(module.filename), "resource")
 
 exports.name = "codemirror-plug"
 exports.version = "0.0.1"
@@ -119,12 +122,41 @@ exports["oneditor:focus"] = function(env, buffer) {
   env.codemirror.focus()
 }
 
+function importStylesheet(uri, document) {
+  var style = document.createElement("link")
+  style.setAttribute("rel", "stylesheet")
+  style.setAttribute("type", "text/css")
+  style.setAttribute("href", uri)
+  document.head.appendChild(style)
+}
+
+function disposeStylesheet(uri, document) {
+  var styles = document.querySelectorAll("link")
+  var count = styles.length
+  var index = 0
+  while (index < count) {
+    var style = styles[index]
+    if (style.getAttribute("href") === uri) {
+      style.parentNode.removeChild(style)
+      return
+    }
+  }
+}
+
 exports.onstartup = meta({
   description: "Hook that registers all plugin commands & types"
 }, function onstartup(env, plugins) {
+
+  // Add additional command to CodeMirror that will broadcast
+  // intent of saving a file.
   CodeMirror.commands.save = function() {
     env.broadcast("editor:save")
   }
+
+  // We need to inject codemirror themes into document.
+  importStylesheet(path.join(resources, "embed.css"), document)
+  importStylesheet(path.join(resources, "codemirror.css"), document)
+  importStylesheet(path.join(resources, "ambiance.css"), document)
 
   var inputView = document.createElement("textarea")
   inputView.setAttribute("id", "input")
@@ -169,6 +201,9 @@ exports.onstartup = meta({
 exports.onshutdown = meta({
   description: "Hook that unregisters unplugged add-on commands & types"
 }, function onshutdown(env) {
+  disposeStylesheet(path.join(resources, "embed.css"), document)
+  disposeStylesheet(path.join(resources, "codemirror.css"), document)
+  disposeStylesheet(path.join(resources, "ambiance.css"), document)
   document.body.removeChild(env.codemirrorView)
   env.CodeMirror = null
   env.codemirrorView = null
